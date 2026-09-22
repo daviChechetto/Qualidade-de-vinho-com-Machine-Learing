@@ -1,4 +1,4 @@
-# ARQUITETURA METODOLÓGICA DO PROJETO
+# Arquitetura Metodológica do Projeto
 
 A metodologia do projeto foi estruturada de forma **sequencial e sistemática**, abrangendo desde a preparação e auditoria do conjunto de dados até o treinamento, a avaliação e a comparação dos modelos de *Machine Learning*. O objetivo é garantir a **reprodutibilidade dos experimentos** e possibilitar uma comparação justa entre os diferentes algoritmos avaliados.
 
@@ -14,14 +14,14 @@ A primeira etapa da metodologia será a **auditoria do conjunto de dados**, com 
 
 Serão verificadas informações como:
 
-* quantidade de registros e variáveis;
-* tipos de dados;
-* presença de valores ausentes;
-* existência de registros duplicados;
-* estatísticas descritivas;
-* distribuição da variável `quality`;
-* correlação entre as variáveis;
-* identificação de possíveis valores extremos.
+- quantidade de registros e variáveis;
+- tipos de dados;
+- presença de valores ausentes;
+- existência de registros duplicados;
+- estatísticas descritivas;
+- distribuição da variável `quality`;
+- correlação entre as variáveis;
+- identificação de possíveis valores extremos.
 
 Durante essa etapa, **nenhuma alteração será realizada na base original**. O objetivo é registrar o estado inicial dos dados e estabelecer uma referência para as etapas posteriores.
 
@@ -31,9 +31,9 @@ Após a auditoria, serão definidos dois problemas distintos de modelagem: **cla
 
 No problema de **classificação**, a variável `quality` será transformada em categorias por meio da criação da variável `quality_class`. Inicialmente, serão consideradas três classes:
 
-* **Baixa qualidade**;
-* **Média qualidade**;
-* **Alta qualidade**.
+- **Baixa qualidade**;
+- **Média qualidade**;
+- **Alta qualidade**.
 
 No problema de **regressão**, a variável `quality` será utilizada diretamente como variável-alvo, permitindo estimar numericamente a avaliação sensorial do vinho.
 
@@ -45,7 +45,7 @@ O conjunto de teste permanecerá **separado e intocado** durante todas as etapas
 
 No conjunto de desenvolvimento, será aplicada **validação cruzada**, permitindo uma comparação mais confiável entre os algoritmos.
 
-Para o problema de classificação, será utilizado o método **StratifiedKFold**, enquanto para o problema de regressão será utilizado o método **KFold**. Em ambos os casos, serão consideradas **cinco divisões (*5-fold cross-validation*)**.
+Para o problema de classificação, será utilizado o método **StratifiedKFold**, enquanto para o problema de regressão será utilizado o método **KFold**. Em ambos os casos, serão consideradas **cinco divisões (5-fold cross-validation)**.
 
 ## 4.5 Experimento de corrupção dos dados
 
@@ -53,18 +53,18 @@ Uma etapa fundamental da metodologia será o experimento relacionado à **qualid
 
 Após a separação do conjunto de teste, serão criadas cópias dos dados de desenvolvimento para a inserção de **corrupções sintéticas controladas**. Entre os problemas simulados, poderão ser incluídos:
 
-* valores ausentes;
-* registros duplicados;
-* valores fisicamente inválidos;
-* erros de escala;
-* problemas de formatação;
-* inconsistências nos tipos de dados.
+- valores ausentes;
+- registros duplicados;
+- valores fisicamente inválidos;
+- erros de escala;
+- problemas de formatação;
+- inconsistências nos tipos de dados.
 
 Todas as alterações realizadas serão registradas, permitindo avaliar posteriormente tanto a capacidade de **detecção e correção dos problemas** quanto o impacto dessas corrupções sobre o desempenho dos modelos.
 
 ## 4.6 Cenários experimentais
 
-A partir da inserção das corrupções, serão avaliados três cenários principais:
+A partir da inserção das corrupções, serão avaliados três cenários principais.
 
 ### Cenário 1 — Dados originais
 
@@ -101,19 +101,23 @@ Após o tratamento dos dados, serão treinados os modelos candidatos para os pro
 
 Cada modelo será avaliado utilizando as **mesmas divisões de dados, procedimentos de validação e métricas**, garantindo condições equivalentes para a comparação dos algoritmos.
 
+### Classificação
+
 Para o problema de classificação, a principal métrica será o **F1-Score macro**, acompanhado das seguintes métricas:
 
-* Accuracy;
-* Precision;
-* Recall;
-* Balanced Accuracy;
-* Matriz de confusão.
+- **Accuracy**;
+- **Precision**;
+- **Recall**;
+- **Balanced Accuracy**;
+- **Matriz de confusão**.
 
-Para o problema de regressão, serão utilizadas as métricas:
+### Regressão
 
-* **MAE** (*Mean Absolute Error*);
-* **RMSE** (*Root Mean Squared Error*);
-* **R²** (*Coeficiente de Determinação*).
+Para o problema de regressão, serão utilizadas as seguintes métricas:
+
+- **MAE** (*Mean Absolute Error*);
+- **RMSE** (*Root Mean Squared Error*);
+- **R²** (*Coeficiente de Determinação*).
 
 ## 4.9 Comparação e análise dos resultados
 
@@ -121,12 +125,12 @@ Por fim, os resultados obtidos nos diferentes experimentos serão comparados com
 
 Serão considerados aspectos como:
 
-* desempenho preditivo dos modelos;
-* impacto das corrupções nos resultados;
-* recuperação do desempenho após a limpeza;
-* tipos de erros cometidos pelos modelos;
-* importância das características físico-químicas;
-* diferenças entre os resultados de classificação e regressão;
-* influência da qualidade dos dados sobre o desempenho preditivo.
+- desempenho preditivo dos modelos;
+- impacto das corrupções nos resultados;
+- recuperação do desempenho após a limpeza;
+- tipos de erros cometidos pelos modelos;
+- importância das características físico-químicas;
+- diferenças entre os resultados de classificação e regressão;
+- influência da qualidade dos dados sobre o desempenho preditivo.
 
 A escolha do modelo a ser utilizado na **aplicação final** será realizada somente após a conclusão dos experimentos e análise dos resultados. Dessa forma, evita-se a seleção antecipada de um algoritmo e garante-se que a decisão seja fundamentada nos resultados obtidos experimentalmente.
