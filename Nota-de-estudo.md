@@ -1,130 +1,120 @@
 Com base nos metadados originais de Cortez et al. (2009), nas diretrizes oficiais da OIV (Organização Internacional da Vinha e do Vinho), nas especificações do arquivo winequality.names, e na literatura complementar do artigo Measuring Wine Quality and
 Typicity, apresento o detalhamento e as restrições lógicas para cada variável.
 
-**1. Fixed acidity (Acidez fixa)**
+### 1. Fixed Acidity (Acidez Fixa)
+*  **Definição:** Representa os ácidos não voláteis (que não evaporam facilmente) presentes no vinho, majoritariamente os ácidos tartárico, málico e succínico.
+*  **Unidade:** g(ácido tartárico) / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Fornece frescor, estrutura, preserva a cor e atua como conservante natural contra contaminações microbianas.
+*  **Qualidade sensorial:** Existe um limite de aceitação; níveis equilibrados trazem frescor, mas o excesso torna o vinho adstringente e excessivamente azedo. Uma análise baseada em regressão linear simples aponta que a acidez fixa tem um efeito positivo na qualidade. Contudo, em modelos de regressão linear múltipla, ela parece não ser um fator principal de influência na qualidade.
+*  **Intervalo típico:** 4.0 a 15.9 g/dm³ (observado nos dados originais).
+*  **Erros de medição:** Valores negativos ou superiores a 20 g/dm³ (fisicamente implausível para um vinho bebível).
+*  **Por que não remover outliers:** Uma acidez extremamente alta pode ser decorrente de colheita muito precoce ou erro humano na correção de acidez, resultando em uma nota sensorial legitimamente baixa (qualidade ruim).
 
-* **Definição:** Representa os ácidos orgânicos não voláteis do vinho, predominando o ácido tartárico, málico, cítrico e succínico.
-* **Unidade:** g/dm³ expresso em equivalente de ácido tartárico (Cortez et al., 2009).
-* **Papel enológico:** Fornece a estrutura química básica ("esqueleto") do vinho, essencial para sua estabilidade microbiológica e categorização.
-* **Qualidade sensorial:** Responsável pela percepção de vivacidade e frescor. A carência torna o vinho "chato" ou plano; o excesso gera forte adstringência e acidez agressiva.
-* **Intervalo típico:** O dataset UCI apresenta variação entre $3.8$ e $15.9$ g/dm³.
-* **Erro de medição:** Valores $< 0$ (impossível) ou superando níveis biologicamente viáveis de um mosto vinificável (ex: $> 30$ g/dm³).
-* **Por que não remover:** Vinhos de climas extremos ou colheitas precoces atingem valores de acidez legítimos, porém extremamente altos, alterando sua representatividade e pontuação sensorial de modo real.
+### 2. Volatile Acidity (Acidez Volátil)
+*  **Definição:** Quantidade de ácidos voláteis, primariamente o ácido acético.
+*  **Unidade:** g(ácido acético) / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** É um subproduto natural da fermentação bacteriana e do envelhecimento. Em níveis altos, é o principal indicador de que o vinho está "picado" (virando vinagre).
+*  **Qualidade sensorial:** Tem uma relação linear significativa e negativa com a qualidade do vinho tinto. Níveis elevados causam sabor e aroma desagradáveis de vinagre. 
+*  **Intervalo típico:** 0.1 a 1.6 g/dm³. A OIV geralmente estabelece o limite legal máximo de acidez volátil em torno de 1.0 a 1.2 g/L para a maioria dos vinhos.
+*  **Erros de medição:** Valores negativos ou extremos como > 5.0 g/dm³ (seria puramente vinagre, improvável de ser submetido como vinho comercial).
+*  **Por que não remover outliers:** Vinhos com acidez volátil alta (1.5 - 2.0) violam normas técnicas e apresentam falha óbvia (defeito enológico). O modelo precisa desses outliers para aprender que altos valores resultam fatalmente em notas baixas.
 
-**2. Volatile acidity (Acidez volátil)**
+### 3. Citric Acid (Ácido Cítrico)
+*  **Definição:** Um ácido orgânico menor no vinho, às vezes adicionado artificialmente para corrigir a acidez total.
+*  **Unidade:** g / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Adiciona "frescor" e vivacidade. Também atua estabilizando o ferro no vinho, prevenindo turbidez (casse férrica).
+*  **Qualidade sensorial:** Gráficos de barras demonstram que a quantidade de ácido cítrico é diretamente proporcional à qualidade do vinho. À medida que a qualidade sobe, a quantidade de ácido cítrico também aumenta, indicando ser uma característica básica para a dependência da qualidade. Apesar disso, análises de correlação multivariada apontam que ele não é o fator principal isolado.
+*  **Intervalo típico:** 0.0 a 1.0 g/dm³. A OIV permite adição de ácido cítrico até o limite máximo de 1.0 g/L no produto final.
+*  **Erros de medição:** Valores negativos ou superiores a 3.0 g/dm³ (adição excessiva ilegal e quimicamente rara).
+*  **Por que não remover outliers:** Uma adulteração (excesso de ácido cítrico) tornaria o vinho desequilibrado e receberia uma nota baixa. Remover esse dado ocultaria o impacto de adulterações.
 
-* **Definição:** Medida dos ácidos destiláveis a vapor, primariamente o ácido acético resultante de subprodutos da fermentação e do metabolismo bacteriano.
-* **Unidade:** g/dm³ expresso em equivalente de ácido acético (Cortez et al., 2009).
-* **Papel enológico:** É o principal indicativo do estado sanitário da bebida e de falhas microbiológicas.
-* **Qualidade sensorial:** Acima dos limiares de tolerância, gera defeitos (aromas de vinagre ou removedor de esmalte). Entretanto, há raríssimas exceções em que taxas consideradas falhas adicionam apreciada complexidade organoléptica, como ocorreu no tinto Cheval Blanc de 1947.
-* **Intervalo típico:** Varia entre $0.08$ e $1.58$ g/dm³. A OIV define o limite regulatório padrão para vinhos comuns próximo a $1.2$ g/L.
-* **Erro de medição:** $< 0$ ou artificialmente superior a limites onde a bebida seria essencialmente vinagre balsâmico industrial ($> 4.0$ g/dm³).
-* **Por que não remover:** Vinhos como o de $1.58$ g/dm³ violam as leis de mercado e representam uma falha, porém devem receber notas severamente baixas na variável de saída. Remover esse outlier impede o modelo de aprender os padrões de um vinho tecnicamente defeituoso.
+### 4. Residual Sugar (Açúcar Residual)
+*  **Definição:** Açúcares da uva (glicose e frutose) que não foram convertidos em álcool pelas leveduras ao final da fermentação.
+*  **Unidade:** g / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Determina a percepção de doçura e influencia o "peso" e corpo do vinho no paladar.
+*  **Qualidade sensorial:** Depende do estilo do vinho. Análises de correlação e regressão linear simples indicam que o açúcar residual quase não tem efeito direto sobre a qualidade do vinho tinto neste dataset. Além disso, em análises de regressão multivariada, ele demonstrou pouca influência na qualidade.
+*  **Intervalo típico:** 0.5 a 65.8 g/dm³ nos dados de Cortez (vinhos brancos *Vinho Verde* frequentemente têm mais açúcar residual).
+*  **Erros de medição:** Valores negativos. Valores acima de 150 g/dm³ são normais para vinhos de sobremesa, mas atípicos para a denominação *Vinho Verde* tradicional de mesa.
+*  **Por que não remover outliers:** Há estilos específicos (como vinhos levemente doces ou de colheita tardia) que possuem alta concentração de açúcar natural. São dados válidos que o modelo deve generalizar.
 
-**3. Citric acid (Ácido cítrico)**
+### 5. Chlorides (Cloretos)
+*  **Definição:** Quantidade de sais presentes no vinho.
+*  **Unidade:** g(cloreto de sódio) / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Deriva principalmente do solo (terroir) e da água de irrigação. Contribui para o perfil mineral e sensação salina.
+*  **Qualidade sensorial:** Possui uma relação linear significativa e negativa com a qualidade do vinho tinto. Níveis muito altos mascaram o sabor frutado.
+*  **Intervalo típico:** 0.01 a 0.6 g/dm³. 
+*  **Erros de medição:** Valores negativos ou anomalias acima de 2.0 g/dm³ (teria gosto literal de água do mar).
+*  **Por que não remover outliers:** Vinhedos costeiros ou erros de filtragem/clarificação podem gerar vinhos salgados, o que pune legitimamente a avaliação sensorial.
 
-* **Definição:** Ácido orgânico que pode estar em pequenas proporções naturais ou ser injetado artificialmente durante o processo como regulador.
-* **Unidade:** g/dm³ (Cortez et al., 2009).
-* **Papel enológico:** Acidificação rápida e estabilização de turbidez.
-* **Qualidade sensorial:** Auxilia o perfil ácido a se tornar levemente mais cortante ou fresco, porém pode resultar em cheiros lácteos ("manteiga") se atacado por bactérias.
-* **Intervalo típico:** $0.0$ a $1.66$ g/dm³. A OIV limita a adição externa a no máximo $1$ g/L.
-* **Erro de medição:** $< 0$ ou acima de patamares de saturação de acidificação irreal (ex: $> 5.0$ g/dm³, o que indicaria erro na casa decimal inserida).
-* **Por que não remover:** Reflete práticas intervencionistas de adegas diferentes; doses cavalares explicam rejeições sensoriais da prova.
+### 6. Free Sulfur Dioxide (Dióxido de Enxofre Livre)
+*  **Definição:** É a fração do SO2 não ligada a outras moléculas, existindo em equilíbrio físico no vinho.
+*  **Unidade:** mg / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** É o principal conservante ativo. Protege contra oxidação (escurecimento) e impede o crescimento de leveduras selvagens e bactérias indesejadas.
+*  **Qualidade sensorial:** Tem uma correlação positiva com a qualidade do vinho tinto, sendo um fator que impacta positivamente nas avaliações quando em equilíbrio. Gráficos de barras mostram uma contribuição significativa para a qualidade.
+*  **Intervalo típico:** 1.0 a 70 mg/dm³ (geralmente mantido entre 20 e 50 mg/L pelos enólogos).
+*  **Erros de medição:** Valores negativos, ou situações em que o SO2 Livre seja numericamente maior que o SO2 Total (uma impossibilidade matemática e química).
+*  **Por que não remover outliers:** Se o enólogo exagerar no sulfito, o vinho apresentará um odor "picante" e metálico, recebendo nota baixa. A relação causa-efeito é real.
 
-**4. Residual sugar (Açúcar residual)**
+### 7. Total Sulfur Dioxide (Dióxido de Enxofre Total)
+*  **Definição:** Soma do dióxido de enxofre livre e da fração que se ligou quimicamente a aldeídos, açúcares e pigmentos.
+*  **Unidade:** mg / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Representa o histórico de todo o sulfito adicionado ao longo do processo de vinificação.
+*  **Qualidade sensorial:** Apresenta uma relação linear significativa, correlacionando-se negativamente com a qualidade do vinho tinto. Excesso causa asfixia aromática (aromas de fósforo riscado).
+*  **Intervalo típico:** 6.0 a 289 mg/dm³. A OIV limita estritamente o SO2 total (variando de 150 mg/L em tintos secos a cerca de 400 mg/L em brancos muito doces).
+*  **Erros de medição:** Valores negativos ou superiores a 500 mg/dm³ em vinhos de mesa normais.
+*  **Por que não remover outliers:** Níveis que extrapolam os limites da OIV sinalizam má qualidade e toxicidade, correspondendo a escores baixos legítimos dados por avaliadores.
 
-* **Definição:** Glicose e frutose residuais não convertidas em etanol no fim da fermentação alcoólica.
-* **Unidade:** g/dm³ (Cortez et al., 2009).
-* **Papel enológico:** Parâmetro decisivo de classificação e precificação das categorias técnicas (Seco, Meio Seco, Doce, etc.).
-* **Qualidade sensorial:** Modula severamente o "corpo" do vinho e precisa ser contrabalançado perfeitamente com a acidez natural e com a agressividade do álcool para harmonizar o produto.
-* **Intervalo típico:** Varia absurdamente de $0.6$ a $65.8$ g/dm³ na base UCI. A OIV descreve patamares de $\le 4$ g/L (vinhos secos) até limites abertos $> 45$ g/L (vinhos de sobremesa).
-* **Erro de medição:** $< 0$ ou superior à capacidade hídrica do mosto (xaropes saturados em excesso de $350$ g/dm³ não constituiriam um líquido vinificável com etanol).
-* **Por que não remover:** Ice Wines e Vinhos de Colheita Tardia comporão estatisticamente pequenos "ilhas" isoladas de açúcar extremo em meio a milhares de vinhos secos, gerando assimetria nas classes. Remove-los destrói inteiramente o aprendizado de estilos enológicos legítimos.
+### 8. Density (Densidade)
+*  **Definição:** Relação de massa por volume do líquido.
+*  **Unidade:** g / cm³ (Cortez et al., 2009).
+*  **Papel enológico:** É um parâmetro físico ditado principalmente pelo balanço entre água (densidade ~1.0), álcool (densidade ~0.79) e açúcar residual (que aumenta a densidade).
+*  **Qualidade sensorial:** Não é um fator principal isolado. A literatura aponta que a densidade tem pouca influência direta sobre a qualidade do vinho tinto.
+*  **Intervalo típico:** 0.985 a 1.030 g/cm³.
+*  **Erros de medição:** Valores inferiores a 0.900 ou superiores a 1.100.
+*  **Por que não remover outliers:** Outliers aqui costumam ser meras consequências matemáticas de vinhos extremamente doces (alta densidade) ou extremamente alcoólicos (baixa densidade), que já explicamos serem dados legítimos.
 
-**5. Chlorides (Cloretos)**
+### 9. pH
+*  **Definição:** Medida logarítmica da concentração de íons de hidrogênio livres, definindo o quão ácido ou básico o líquido é de fato.
+*  **Unidade:** Adimensional (escala logarítmica).
+*  **Papel enológico:** É vital para a estabilidade química, define a tonalidade da cor em tintos, e regula a eficácia protetora do SO2.
+*  **Qualidade sensorial:** É negativamente correlacionado com a qualidade do vinho tinto. Vinhos com pH muito alto são percebidos como "chatos", sem vida ("flácidos").
+*  **Intervalo típico:** 2.7 a 4.0. 
+*  **Erros de medição:** Abaixo de 2.0 ou acima de 5.0.
+*  **Por que não remover outliers:** Um pH de 4.1 ou 4.2 representa falha grave de produção, deixando o vinho suscetível a bactérias. Isso explica diretamente notas de qualidade ruins (ex: nota 3).
 
-* **Definição:** Sais inorgânicos dissociados expressando a salinidade da bebida (advindos muitas vezes do solo).
-* **Unidade:** g/dm³ expresso em equivalente de cloreto de sódio (Cortez et al., 2009).
-* **Papel enológico:** Componente inorgânico residual muitas vezes oriundo do lençol freático das vinhas ou processos de clarificação.
-* **Qualidade sensorial:** Ajuda no peso da mineralidade. Extremos geram amargor e gosto salino atípico rejeitado por provadores.
-* **Intervalo típico:** $0.009$ a $0.611$ g/dm³.
-* **Erro de medição:** $< 0$ ou picos salgados de água do mar intragáveis ($> 2.0$ g/dm³).
-* **Por que não remover:** A salinidade é um biomarcador essencial do *terroir* das parcelas geográficas (como planícies calcárias costeiras).
+### 10. Sulphates (Sulfatos)
+*  **Definição:** Concentração de íons sulfato, geralmente originários de aditivos como o metabissulfito de potássio ou sulfato de potássio usados na vinificação.
+*  **Unidade:** g(sulfato de potássio) / dm³ (Cortez et al., 2009).
+*  **Papel enológico:** Resulta da oxidação do sulfito e aditivos minerais, auxiliando na estabilização.
+*  **Qualidade sensorial:** Tem uma correlação significativa e efeito positivo na qualidade do vinho tinto. Em excesso, no entanto, pode deixar o vinho amargo e duro.
+*  **Intervalo típico:** 0.3 a 2.0 g/dm³. As resoluções da OIV tradicionalmente toleram um limite em torno de 2.0 a 2.5 g/L expresso em sulfato de potássio.
+*  **Erros de medição:** Valores negativos ou absurdamente altos (> 5.0 g/dm³).
+*  **Por que não remover outliers:** Novamente, refletem o nível tecnológico do produtor. Erros na adição geram penalidade sensorial, o que reflete a realidade do experimento.
 
-**6. Free sulfur dioxide (SO2 livre)**
+### 11. Alcohol (Álcool)
+*  **Definição:** Quantidade de etanol presente no vinho, resultante da fermentação alcoólica dos açúcares.
+*  **Unidade:** % vol (Porcentagem por volume) (Cortez et al., 2009).
+*  **Papel enológico:** Base estrutural do vinho. Interfere na percepção de calor, peso (corpo) e na volatilização dos compostos aromáticos.
+*  **Qualidade sensorial:** É a variável que tem a maior correlação positiva com a qualidade do vinho tinto. Consumidores que buscam melhor qualidade demonstram preferência por maiores níveis de álcool.
+*  **Intervalo típico:** 8.0 a 14.9 % vol (Vinhos Verdes brancos tradicionais chegam a ser mais leves, a partir de 8.5%).
+*  **Erros de medição:** Menor que 4.0 % ou maior que 25.0 % (improvável num vinho não-fortificado).
+*  **Por que não remover outliers:** Vinhos com teores muito altos ou muito baixos são apenas extremos de estilos enológicos (ex: muito maduro ou muito verde). Removê-los introduziria um viés de distribuição no seu dataset.
 
-* **Definição:** Forma solúvel gasosa e íons ativos (bissulfito e sulfito) que permanecem soltos na matriz coloidal do líquido.
-* **Unidade:** mg/dm³ (Cortez et al., 2009).
-* **Papel enológico:** O preservativo essencial, com ação antioxidante e bactericida para bloquear contaminações.
-* **Qualidade sensorial:** Subdosagens causam quebras de cor (escurecimento e "browning") e traços oxidativos como o aldeído. Superdosagens causam sensação pungente nas vias aéreas e aromas grosseiros de enxofre ou "fósforo riscado".
-* **Intervalo típico:** De $1.0$ a cerca de $289$ mg/dm³. A OIV recomenda níveis estocados próximos de $25$ mg/L (tintos) e $30$ mg/L (brancos).
-* **Erro de medição:** $< 0$, valor absoluto irreal (ex: $> 500$ mg/dm³) ou, de forma crucial, valor superior ao **total sulfur dioxide**.
-* **Por que não remover:** Um número atípico alto de SO2 livre penaliza sensivelmente a percepção nasal. Ele é uma intercorrência da vinificação que necessita estar nos dados.
 
-**7. Total sulfur dioxide (SO2 total)**
+### Tabela de Resumo para Criação de Regras de Validação (Data Quality)
 
-* **Definição:** Quantidade bruta, resultante de todas as formas (livres e ligadas estruturalmente às proteínas e fenóis) adicionadas.
-* **Unidade:** mg/dm³ (Cortez et al., 2009).
-* **Papel enológico:** Critério central da inspeção legal que barra a distribuição do vinho por toxicidade humana.
-* **Qualidade sensorial:** Modifica drasticamente o tempo de vida do vinho e encobre frutados delicados se exagerado.
-* **Intervalo típico:** $6$ a $440$ mg/dm³. Limites máximos toleráveis da OIV oscilam de $150$ a cerca de $400$ mg/L, estendidos a vinhos que possuam altíssimo teor de açúcar livre propenso à re-fermentação.
-* **Erro de medição:** $< 0$ ou discrepâncias absurdas como $> 1000$ mg/dm³.
-* **Por que não remover:** A legislação permite altíssimas injeções em vinhos doces de alta qualidade. Tais vinhos aparecerão nas avaliações estatísticas como concentrações massivas anormais.
+Esta tabela apresenta limites físicos/lógicos onde os dados podem ser considerados erros de sistema, digitação ou sensores, justificando limpeza. Qualquer valor dentro destes limites lógicos deve ser preservado (mesmo que seja um outlier estatístico visualizado num boxplot).
 
-**8. Density (Densidade)**
-
-* **Definição:** Razão da massa do vinho sobre um referencial de volume.
-* **Unidade:** g/cm³ (Cortez et al., 2009).
-* **Papel enológico:** Derivado de interações físicas puras, balanceando a água ($\sim 1.0$) frente a carga alcóolica redutora ($\text{etanol} = 0.789$) e carga sólida aditiva ($\text{açúcares minerais} > 1.0$).
-* **Qualidade sensorial:** Influencia o nível de extração e a textura pesada e espessa em boca (ou "body").
-* **Intervalo típico:** Próximo à densidade da água: de $0.987$ a $1.038$ g/cm³.
-* **Erro de medição:** $< 0.789$ g/cm³ (o mosto seria literalmente menos denso que álcool etílico puro) ou maior que $1.150$ g/cm³.
-* **Por que não remover:** Uma densidade de $1.03$ denuncia que o líquido possui muito açúcar e álcool simultâneos, não indicando erro do equipamento laboratorial, mas apenas um produto untuoso.
-
-**9. pH**
-
-* **Definição:** Medida da atividade exponencial logarítmica de íons hidrogênio do meio.
-* **Unidade:** Adimensional na escala de pH (Cortez et al., 2009).
-* **Papel enológico:** Base fundamental para gerir toda reatividade da garrafa. Aumentos de pH diminuem exponencialmente a eficiência ativa do SO2.
-* **Qualidade sensorial:** Influencia drasticamente a cor e o frescor estrito. pH altos são propensos a ataques fétidos de leveduras selvagens.
-* **Intervalo típico:** Oscila de $2.7$ a $4.0$.
-* **Erro de medição:** $< 2.0$ ou $> 5.0$ (vinhos comerciais se degradam quimicamente ao cruzar esses limiares; apontam quebra mecânica do eletrodo de leitura, descalibração ou erro humano de digitação de casa decimal).
-* **Por que não remover:** Um pH isolado de $4.1$ é perigosamente base, mas acontece em climas secos em safras atípicas. É verídico e explica deficiências.
-
-**10. Sulphates (Sulfatos)**
-
-* **Definição:** Extrato de ânions de potássio na matriz resultante da sulfatação do mosto e quebra biológica.
-* **Unidade:** g/dm³ expresso em equivalente de sulfato de potássio (Cortez et al., 2009).
-* **Papel enológico:** Ligado à estabilização de mostos tintos ou a acidez indireta de regiões secas (prática de "plastering").
-* **Qualidade sensorial:** Produzem impactos discretos de limpeza salina ou traços adstringentes metálicos se extrapolados.
-* **Intervalo típico:** $0.22$ a $2.0$ g/dm³.
-* **Erro de medição:** $< 0$ ou picos irreais ($> 10.0$ g/dm³).
-* **Por que não remover:** Retrato das particularidades produtivas de diferentes enólogos.
-
-**11. Alcohol (Álcool)**
-
-* **Definição:** Percentagem etílica oriunda estritamente pela digestão fermentativa.
-* **Unidade:** % vol. (Cortez et al., 2009).
-* **Papel enológico:** Fornece a identidade taxonômica oficial e conservação ao vinho, cujas métricas basais são defendidas pela OIV a $\ge 8.5\%$ vol, permitindo reduções regionais até $7\%$.
-* **Qualidade sensorial:** Imprime calor na boca, eleva o corpo e dilui traços secos, porém, quando extrapolado pelas mudanças climáticas ou desajustado, ele domina excessivamente o conjunto, gerando queimação irritante.
-* **Intervalo típico:** $8.0$ a $14.9\%$ vol no dataset UCI.
-* **Erro de medição:** $< 0$ ou acima do limiar biológico absoluto em que a própria levedura sucumbe ($> 22.0\%$ vol).
-* **Por que não remover:** Níveis de extrema base como $8.0\%$ não são erros e referem-se à tipicidade climática dos vinhos portugueses originais do dataset ("Vinho Verde").
-
-### Tabela de Validação e Consistência (Data Quality Rules)
-
-Abaixo está o roteiro de regras para aplicação nas suas pipelines de pré-processamento. Apenas registros que ultrapassarem os **Limites Físicos Absolutos** devem ser classificados como *erros de digitação/dado corrompido*.
-
-| Variável Físico-Química | Tipo de Dado | Limite Físico (Corrupção) Mín. | Limite Físico (Corrupção) Máx. | Regra Lógica Interdependente |
-| --- | --- | --- | --- | --- |
-| **fixed acidity** | numérico | $< 0.0$ | $> 30.0$ | - |
-| **volatile acidity** | numérico | $< 0.0$ | $> 4.0$ | - |
-| **citric acid** | numérico | $< 0.0$ | $> 5.0$ | - |
-| **residual sugar** | numérico | $< 0.0$ | $> 350.0$ | - |
-| **chlorides** | numérico | $< 0.0$ | $> 2.0$ | - |
-| **free sulfur dioxide** | numérico | $< 0.0$ | $> 500.0$ | $\le \text{total sulfur dioxide}$ |
-| **total sulfur dioxide** | numérico | $< 0.0$ | $> 1000.0$ | $\ge \text{free sulfur dioxide}$ |
-| **density** | numérico | $< 0.789$ | $> 1.150$ | - |
-| **pH** | numérico | $< 2.0$ | $> 5.0$ | - |
-| **sulphates** | numérico | $< 0.0$ | $> 10.0$ | - |
-| **alcohol** | numérico | $< 0.0$ | $> 22.0$ | - |
+| Variável | Unidade | Limite Inferior (Erro se menor que) | Limite Superior Lógico (Erro se maior que) | Restrição Lógica Cruzada |
+| :--- | :--- | :--- | :--- | :--- |
+| fixed acidity | $g/dm^3$ | $0.0$ | $20.0$ | - |
+| volatile acidity | $g/dm^3$ | $0.0$ | $5.0$ | - |
+| citric acid | $g/dm^3$ | $0.0$ | $3.0$ | - |
+| residual sugar | $g/dm^3$ | $0.0$ | $300.0$ | - |
+| chlorides | $g/dm^3$ | $0.0$ | $2.0$ | - |
+| free sulfur dioxide | $mg/dm^3$ | $0.0$ | $1000.0$ | `free_sulfur_dioxide <= total_sulfur_dioxide` |
+| total sulfur dioxide | $mg/dm^3$ | $0.0$ | $1000.0$ | `total_sulfur_dioxide >= free_sulfur_dioxide` |
+| density | $g/cm^3$ | $0.900$ | $1.100$ | - |
+| pH | adimensional | $2.0$ | $5.0$ | - |
+| sulphates | $g/dm^3$ | $0.0$ | $5.0$ | - |
+| alcohol | $\%$ vol | $4.0$ | $25.0$ | - |
